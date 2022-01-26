@@ -71,7 +71,7 @@
 
     <dependency>
       <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId><version>23.1-jre</version>
+      <artifactId>guava</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
