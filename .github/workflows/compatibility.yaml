@@ -6,7 +6,8 @@ on:
         # Why not using "--ref" property in workflow? It's because the option
         # uses workflow file in the ref, not the main branch. Declaring our own
         # baseBranch variable allows us to use the workflow definition in the
-        # main branch against old refs.
+        # main branch against old branches. This does not require copying this
+        # workflow file to the branch.
         description: 'Base branch'
         required: true
         type: string
