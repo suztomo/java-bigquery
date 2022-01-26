@@ -2,6 +2,14 @@ name: Compatibility Check
 on:
   workflow_dispatch:
     inputs:
+      baseBranch:
+        # Why not using "--ref" property in workflow? It's because the option
+        # uses workflow file in the ref, not the main branch. Declaring our own
+        # baseBranch variable allows us to use the workflow definition in the
+        # main branch against old refs.
+        description: 'Base branch'
+        required: true
+        type: string
       dependencyMavenCoordinates:
         description: 'The Maven coordinates of the dependency to check'
         required: true
@@ -14,6 +22,8 @@ jobs:
       run: |
         echo "dependencyMavenCoordinates: ${{ github.event.inputs.dependencyMavenCoordinates }}"
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.baseBranch }}
     - name: Show git commit log of the specified branch
       run: git log -1
     - uses: stCarolas/setup-maven@v4
