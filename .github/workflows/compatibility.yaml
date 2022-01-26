@@ -19,6 +19,8 @@ jobs:
         echo "baseBranch: ${{ github.event.inputs.baseBranch }}"
         echo "dependencyMavenCoordinates: ${{ github.event.inputs.dependencyMavenCoordinates }}"
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.baseBranch }}
     - uses: stCarolas/setup-maven@v4
       with:
         maven-version: 3.8.1
@@ -26,8 +28,9 @@ jobs:
       with:
         java-version: 8
     - run: java -version
-    - run |
-        ./kokoro/compatibility-pom-updater.sh
+    - name: Update pom.xml to use the specified dependencies
+      run |
+        ./kokoro/compatibility-pom-updater.sh ${{ github.event.inputs.dependencyMavenCoordinates }}
     - run: .kokoro/build.sh
       env:
         JOB_TYPE: test
