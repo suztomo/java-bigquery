@@ -5,12 +5,14 @@ MAVEN_COORDINATES_LIST=$1
 
 set -e
 
+IFS_BACKUP=$IFS
+
 function replacePomFile () {
   GROUP_ID=$1
   ARTIFACT_ID=$2
   VERSION=$3
   echo "$GROUP_ID $ARTIFACT_ID $VERSION"
-
+  export IFS=$IFS_BACKUP
   for POM in `find . -name pom.xml`; do
     HAS_DEPENDENCY=$(xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 \
         -t -v "count(//x:project/x:dependencies/x:dependency/x:artifactId[text()='${ARTIFACT_ID}'])" \
@@ -44,4 +46,4 @@ for MAVEN_COORDINATES in $MAVEN_COORDINATES_LIST; do
   VERSION="${items[2]}"
   replacePomFile "$GROUP_ID" "$ARTIFACT_ID" "$VERSION"
 done
-export IFS=$IFS_BACKUP
+
