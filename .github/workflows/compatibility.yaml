@@ -1,0 +1,31 @@
+name: Compatibility Check
+on:
+  workflow_dispatch:
+    inputs:
+      baseBranch:
+        description: 'Base branch'
+        required: true
+        type: string
+      dependencyMavenCoordinates:
+        description: 'The Maven coordinates of the dependency to check'
+        required: true
+        type: string
+jobs:
+  units:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print the input variables
+      run: |
+        echo "baseBranch: ${{ github.event.inputs.baseBranch }}"
+        echo "dependencyMavenCoordinates: ${{ github.event.inputs.dependencyMavenCoordinates }}"
+    - uses: actions/checkout@v2
+    - uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.8.1
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{matrix.java}}
+    - run: java -version
+    - run: .kokoro/build.sh
+      env:
+        JOB_TYPE: test
