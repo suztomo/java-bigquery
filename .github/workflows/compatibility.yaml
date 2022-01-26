@@ -11,7 +11,7 @@ on:
         required: true
         type: string
 jobs:
-  units:
+  compatibility-check:
     runs-on: ubuntu-latest
     steps:
     - name: Print the input variables
