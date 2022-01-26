@@ -21,7 +21,7 @@ See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>libraries-bom</artifactId>
-      <version>23.0.0</version>
+      <version>24.2.0</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -33,6 +33,7 @@ See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-bigquery</artifactId>
   </dependency>
+</dependencies>
 
 ```
 
@@ -43,7 +44,7 @@ If you are using Maven without BOM, add this to your dependencies:
 <dependency>
   <groupId>com.google.cloud</groupId>
   <artifactId>google-cloud-bigquery</artifactId>
-  <version>2.1.7</version>
+  <version>2.6.2</version>
 </dependency>
 
 ```
@@ -51,20 +52,20 @@ If you are using Maven without BOM, add this to your dependencies:
 If you are using Gradle 5.x or later, add this to your dependencies
 
 ```Groovy
-implementation platform('com.google.cloud:libraries-bom:23.0.0')
+implementation platform('com.google.cloud:libraries-bom:24.2.0')
 
 implementation 'com.google.cloud:google-cloud-bigquery'
 ```
 If you are using Gradle without BOM, add this to your dependencies
 
 ```Groovy
-implementation 'com.google.cloud:google-cloud-bigquery:2.1.7'
+implementation 'com.google.cloud:google-cloud-bigquery:2.6.2'
 ```
 
 If you are using SBT, add this to your dependencies
 
 ```Scala
-libraryDependencies += "com.google.cloud" % "google-cloud-bigquery" % "2.1.7"
+libraryDependencies += "com.google.cloud" % "google-cloud-bigquery" % "2.6.2"
 ```
 
 ## Authentication
@@ -112,7 +113,6 @@ Samples are in the [`samples/`](https://github.com/googleapis/java-bigquery/tree
 | --------------------------- | --------------------------------- | ------ |
 | Add Column Load Append | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/AddColumnLoadAppend.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/AddColumnLoadAppend.java) |
 | Add Empty Column | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/AddEmptyColumn.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/AddEmptyColumn.java) |
-| Alter Materialized View | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/AlterMaterializedView.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/AlterMaterializedView.java) |
 | Auth Drive Scope | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/AuthDriveScope.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/AuthDriveScope.java) |
 | Auth Snippets | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/AuthSnippets.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/AuthSnippets.java) |
 | Auth User Flow | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/AuthUserFlow.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/AuthUserFlow.java) |
@@ -234,6 +234,7 @@ Samples are in the [`samples/`](https://github.com/googleapis/java-bigquery/tree
 | Update Dataset Expiration | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/UpdateDatasetExpiration.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/UpdateDatasetExpiration.java) |
 | Update Dataset Partition Expiration | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/UpdateDatasetPartitionExpiration.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/UpdateDatasetPartitionExpiration.java) |
 | Update Iam Policy | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/UpdateIamPolicy.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/UpdateIamPolicy.java) |
+| Update Materialized View | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/UpdateMaterializedView.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/UpdateMaterializedView.java) |
 | Update Model Description | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/UpdateModelDescription.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/UpdateModelDescription.java) |
 | Update Routine | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/UpdateRoutine.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/UpdateRoutine.java) |
 | Update Table Cmek | [source code](https://github.com/googleapis/java-bigquery/blob/main/samples/snippets/src/main/java/com/example/bigquery/UpdateTableCmek.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-bigquery&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/bigquery/UpdateTableCmek.java) |
@@ -251,7 +252,7 @@ To get help, follow the instructions in the [shared Troubleshooting document][tr
 
 ## Supported Java Versions
 
-Java 7 or above is required for using this client.
+Java 8 or above is required for using this client.
 
 Google's Java client libraries,
 [Google Cloud Client Libraries][cloudlibs]
@@ -320,7 +321,6 @@ Apache 2.0 - See [LICENSE][license] for more information.
 
 Java Version | Status
 ------------ | ------
-Java 7 | [![Kokoro CI][kokoro-badge-image-1]][kokoro-badge-link-1]
 Java 8 | [![Kokoro CI][kokoro-badge-image-2]][kokoro-badge-link-2]
 Java 8 OSX | [![Kokoro CI][kokoro-badge-image-3]][kokoro-badge-link-3]
 Java 8 Windows | [![Kokoro CI][kokoro-badge-image-4]][kokoro-badge-link-4]
@@ -329,7 +329,7 @@ Java 11 | [![Kokoro CI][kokoro-badge-image-5]][kokoro-badge-link-5]
 Java is a registered trademark of Oracle and/or its affiliates.
 
 [product-docs]: https://cloud.google.com/bigquery
-[javadocs]: https://googleapis.dev/java/google-cloud-bigquery/latest
+[javadocs]: https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/history
 [kokoro-badge-image-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/java-bigquery/java7.svg
 [kokoro-badge-link-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/java-bigquery/java7.html
 [kokoro-badge-image-2]: http://storage.googleapis.com/cloud-devrel-public/java/badges/java-bigquery/java8.svg
@@ -340,7 +340,7 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [kokoro-badge-link-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/java-bigquery/java8-win.html
 [kokoro-badge-image-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/java-bigquery/java11.svg
 [kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/java-bigquery/java11.html
-[stability-image]: https://img.shields.io/badge/stability-ga-green
+[stability-image]: https://img.shields.io/badge/stability-stable-green
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-bigquery.svg
 [maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-bigquery&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication

@@ -45,6 +45,7 @@ public abstract class JobStatistics implements Serializable {
   private final ScriptStatistics scriptStatistics;
   private final List<ReservationUsage> reservationUsage;
   private final TransactionInfo transactionInfo;
+  private final SessionInfo sessionInfo;
 
   /** A Google BigQuery Copy Job statistics. */
   public static class CopyStatistics extends JobStatistics {
@@ -320,6 +321,7 @@ public abstract class JobStatistics implements Serializable {
 
     private static final long serialVersionUID = 7539354109226732353L;
 
+    private final BiEngineStats biEngineStats;
     private final Integer billingTier;
     private final Boolean cacheHit;
     private final String ddlOperationPerformed;
@@ -401,6 +403,7 @@ public abstract class JobStatistics implements Serializable {
 
     static final class Builder extends JobStatistics.Builder<QueryStatistics, Builder> {
 
+      private BiEngineStats biEngineStats;
       private Integer billingTier;
       private Boolean cacheHit;
       private String ddlOperationPerformed;
@@ -424,6 +427,10 @@ public abstract class JobStatistics implements Serializable {
       private Builder(com.google.api.services.bigquery.model.JobStatistics statisticsPb) {
         super(statisticsPb);
         if (statisticsPb.getQuery() != null) {
+          if (statisticsPb.getQuery().getBiEngineStatistics() != null) {
+            this.biEngineStats =
+                BiEngineStats.fromPb(statisticsPb.getQuery().getBiEngineStatistics());
+          }
           this.billingTier = statisticsPb.getQuery().getBillingTier();
           this.cacheHit = statisticsPb.getQuery().getCacheHit();
           this.ddlOperationPerformed = statisticsPb.getQuery().getDdlOperationPerformed();
@@ -465,6 +472,11 @@ public abstract class JobStatistics implements Serializable {
             this.dmlStats = DmlStats.fromPb(statisticsPb.getQuery().getDmlStats());
           }
         }
+      }
+
+      Builder setBiEngineStats(BiEngineStats biEngineStats) {
+        this.biEngineStats = biEngineStats;
+        return self();
       }
 
       Builder setBillingTier(Integer billingTier) {
@@ -565,6 +577,7 @@ public abstract class JobStatistics implements Serializable {
 
     private QueryStatistics(Builder builder) {
       super(builder);
+      this.biEngineStats = builder.biEngineStats;
       this.billingTier = builder.billingTier;
       this.cacheHit = builder.cacheHit;
       this.ddlOperationPerformed = builder.ddlOperationPerformed;
@@ -582,6 +595,11 @@ public abstract class JobStatistics implements Serializable {
       this.queryPlan = builder.queryPlan;
       this.timeline = builder.timeline;
       this.schema = builder.schema;
+    }
+
+    /** Returns query statistics specific to the use of BI Engine. */
+    public BiEngineStats getBiEngineStats() {
+      return biEngineStats;
     }
 
     /** Returns the billing tier for the job. */
@@ -700,6 +718,7 @@ public abstract class JobStatistics implements Serializable {
     @Override
     ToStringHelper toStringHelper() {
       return super.toStringHelper()
+          .add("biEngineStats", biEngineStats)
           .add("billingTier", billingTier)
           .add("cacheHit", cacheHit)
           .add("totalBytesBilled", totalBytesBilled)
@@ -721,6 +740,7 @@ public abstract class JobStatistics implements Serializable {
     public final int hashCode() {
       return Objects.hash(
           baseHashCode(),
+          biEngineStats,
           billingTier,
           cacheHit,
           totalBytesBilled,
@@ -732,6 +752,9 @@ public abstract class JobStatistics implements Serializable {
     @Override
     com.google.api.services.bigquery.model.JobStatistics toPb() {
       JobStatistics2 queryStatisticsPb = new JobStatistics2();
+      if (biEngineStats != null) {
+        queryStatisticsPb.setBiEngineStatistics(biEngineStats.toPb());
+      }
       queryStatisticsPb.setBillingTier(billingTier);
       queryStatisticsPb.setCacheHit(cacheHit);
       queryStatisticsPb.setDdlOperationPerformed(ddlOperationPerformed);
@@ -1251,6 +1274,76 @@ public abstract class JobStatistics implements Serializable {
     }
   }
 
+  // SessionInfo contains information about the session if this job is part of one.
+  public static class SessionInfo {
+
+    // Id of the session
+    private final String sessionId;
+
+    public static class Builder {
+
+      private String sessionId;
+
+      private Builder() {};
+
+      Builder setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+        return this;
+      }
+
+      SessionInfo build() {
+        return new SessionInfo(this);
+      }
+    }
+
+    private SessionInfo(Builder builder) {
+      this.sessionId = builder.sessionId;
+    }
+
+    public String getSessionId() {
+      return sessionId;
+    }
+
+    static Builder newBuilder() {
+      return new Builder();
+    }
+
+    ToStringHelper toStringHelper() {
+      return MoreObjects.toStringHelper(this).add("sessionId", sessionId);
+    }
+
+    @Override
+    public String toString() {
+      return toStringHelper().toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return obj == this
+          || obj != null
+              && obj.getClass().equals(SessionInfo.class)
+              && Objects.equals(toPb(), ((SessionInfo) obj).toPb());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(sessionId);
+    }
+
+    com.google.api.services.bigquery.model.SessionInfo toPb() {
+      com.google.api.services.bigquery.model.SessionInfo sessionInfo =
+          new com.google.api.services.bigquery.model.SessionInfo();
+      sessionInfo.setSessionId(sessionId);
+      return sessionInfo;
+    }
+
+    static SessionInfo fromPb(com.google.api.services.bigquery.model.SessionInfo sessionInfo) {
+      SessionInfo.Builder builder = newBuilder();
+      builder.setSessionId(sessionInfo.getSessionId());
+      return builder.build();
+    }
+  }
+
   abstract static class Builder<T extends JobStatistics, B extends Builder<T, B>> {
 
     private Long creationTime;
@@ -1261,6 +1354,7 @@ public abstract class JobStatistics implements Serializable {
     private ScriptStatistics scriptStatistics;
     private List<ReservationUsage> reservationUsage;
     private TransactionInfo transactionInfo;
+    private SessionInfo sessionInfo;
 
     protected Builder() {}
 
@@ -1279,6 +1373,9 @@ public abstract class JobStatistics implements Serializable {
       }
       if (statisticsPb.getTransactionInfo() != null) {
         this.transactionInfo = TransactionInfo.fromPb(statisticsPb.getTransactionInfo());
+      }
+      if (statisticsPb.getSessionInfo() != null) {
+        this.sessionInfo = SessionInfo.fromPb(statisticsPb.getSessionInfo());
       }
     }
 
@@ -1314,6 +1411,7 @@ public abstract class JobStatistics implements Serializable {
     this.scriptStatistics = builder.scriptStatistics;
     this.reservationUsage = builder.reservationUsage;
     this.transactionInfo = builder.transactionInfo;
+    this.sessionInfo = builder.sessionInfo;
   }
 
   /** Returns the creation time of the job in milliseconds since epoch. */
@@ -1362,6 +1460,11 @@ public abstract class JobStatistics implements Serializable {
     return transactionInfo;
   }
 
+  /** Info of the session if this job is part of one. */
+  public SessionInfo getSessionInfo() {
+    return sessionInfo;
+  }
+
   ToStringHelper toStringHelper() {
     return MoreObjects.toStringHelper(this)
         .add("creationTime", creationTime)
@@ -1371,7 +1474,8 @@ public abstract class JobStatistics implements Serializable {
         .add("parentJobId", parentJobId)
         .add("scriptStatistics", scriptStatistics)
         .add("reservationUsage", reservationUsage)
-        .add("transactionInfo", transactionInfo);
+        .add("transactionInfo", transactionInfo)
+        .add("sessionInfo", sessionInfo);
   }
 
   @Override
@@ -1388,7 +1492,8 @@ public abstract class JobStatistics implements Serializable {
         parentJobId,
         scriptStatistics,
         reservationUsage,
-        transactionInfo);
+        transactionInfo,
+        sessionInfo);
   }
 
   final boolean baseEquals(JobStatistics jobStatistics) {
@@ -1412,6 +1517,9 @@ public abstract class JobStatistics implements Serializable {
     }
     if (transactionInfo != null) {
       statistics.setTransactionInfo(transactionInfo.toPb());
+    }
+    if (sessionInfo != null) {
+      statistics.setSessionInfo(sessionInfo.toPb());
     }
     return statistics;
   }

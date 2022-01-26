@@ -2236,6 +2236,39 @@ public class ITBigQueryTest {
   }
 
   @Test
+  public void testQuerySessionSupport() throws InterruptedException {
+    String query = "CREATE TEMPORARY TABLE temptable AS SELECT 17 as foo";
+    QueryJobConfiguration queryJobConfiguration =
+        QueryJobConfiguration.newBuilder(query)
+            .setDefaultDataset(DatasetId.of(DATASET))
+            .setCreateSession(true)
+            .build();
+    Job remoteJob = bigquery.create(JobInfo.of(queryJobConfiguration));
+    remoteJob = remoteJob.waitFor();
+    assertNull(remoteJob.getStatus().getError());
+
+    Job queryJob = bigquery.getJob(remoteJob.getJobId());
+    JobStatistics.QueryStatistics statistics = queryJob.getStatistics();
+    String sessionId = statistics.getSessionInfo().getSessionId();
+    assertNotNull(sessionId);
+
+    String queryTempTable = "SELECT * FROM temptable";
+    ConnectionProperty connectionProperty =
+        ConnectionProperty.newBuilder().setKey("session_id").setValue(sessionId).build();
+    QueryJobConfiguration queryJobConfigurationWithSession =
+        QueryJobConfiguration.newBuilder(queryTempTable)
+            .setDefaultDataset(DatasetId.of(DATASET))
+            .setConnectionProperties(ImmutableList.of(connectionProperty))
+            .build();
+    Job remoteJobWithSession = bigquery.create(JobInfo.of(queryJobConfigurationWithSession));
+    remoteJobWithSession = remoteJobWithSession.waitFor();
+    assertNull(remoteJobWithSession.getStatus().getError());
+    Job queryJobWithSession = bigquery.getJob(remoteJobWithSession.getJobId());
+    JobStatistics.QueryStatistics statisticsWithSession = queryJobWithSession.getStatistics();
+    assertEquals(sessionId, statisticsWithSession.getSessionInfo().getSessionId());
+  }
+
+  @Test
   public void testDmlStatistics() throws InterruptedException {
     String tableName = TABLE_ID_FASTQUERY.getTable();
     // Run a DML statement to UPDATE 2 rows of data
@@ -2867,6 +2900,14 @@ public class ITBigQueryTest {
     assertTrue(bigquery.delete(destinationTable));
     Job queryJob = bigquery.getJob(remoteJob.getJobId());
     JobStatistics.QueryStatistics statistics = queryJob.getStatistics();
+    if (statistics.getBiEngineStats() != null) {
+      assertEquals(statistics.getBiEngineStats().getBiEngineMode(), "DISABLED");
+      assertEquals(
+          statistics.getBiEngineStats().getBiEngineReasons().get(0).getCode(), "OTHER_REASON");
+      assertEquals(
+          statistics.getBiEngineStats().getBiEngineReasons().get(0).getMessage(),
+          "Query output to destination table is not supported.");
+    }
     assertNotNull(statistics.getQueryPlan());
   }
 
@@ -3169,6 +3210,7 @@ public class ITBigQueryTest {
     assertEquals(2L, statistics.getOutputRows().longValue());
     LoadJobConfiguration jobConfiguration = job.getConfiguration();
     assertEquals(TABLE_SCHEMA, jobConfiguration.getSchema());
+    assertNull(jobConfiguration.getSourceUris());
     assertNull(job.getStatus().getError());
     Page<FieldValueList> rows = bigquery.listTableData(tableId);
     int rowCount = 0;

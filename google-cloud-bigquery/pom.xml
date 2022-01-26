@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.cloud</groupId>
   <artifactId>google-cloud-bigquery</artifactId>
-  <version>2.2.2-SNAPSHOT</version><!-- {x-version-update:google-cloud-bigquery:current} -->
+  <version>2.6.3-SNAPSHOT</version><!-- {x-version-update:google-cloud-bigquery:current} -->
   <packaging>jar</packaging>
   <name>BigQuery</name>
   <url>https://github.com/googleapis/java-bigquery</url>
@@ -11,7 +11,7 @@
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-bigquery-parent</artifactId>
-    <version>2.2.2-SNAPSHOT</version><!-- {x-version-update:google-cloud-bigquery:current} -->
+    <version>2.6.3-SNAPSHOT</version><!-- {x-version-update:google-cloud-bigquery:current} -->
   </parent>
   <properties>
     <site.installationModule>google-cloud-bigquery</site.installationModule>
@@ -28,14 +28,6 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-datacatalog</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api.grpc</groupId>
-      <artifactId>proto-google-cloud-datacatalog-v1</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -116,6 +108,16 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-datacatalog</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-datacatalog-v1</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -132,7 +134,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>add-source</id>

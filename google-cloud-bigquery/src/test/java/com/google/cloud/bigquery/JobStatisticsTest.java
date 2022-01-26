@@ -26,6 +26,7 @@ import com.google.cloud.bigquery.JobStatistics.QueryStatistics;
 import com.google.cloud.bigquery.JobStatistics.ReservationUsage;
 import com.google.cloud.bigquery.JobStatistics.ScriptStatistics;
 import com.google.cloud.bigquery.JobStatistics.ScriptStatistics.ScriptStackFrame;
+import com.google.cloud.bigquery.JobStatistics.SessionInfo;
 import com.google.cloud.bigquery.JobStatistics.TransactionInfo;
 import com.google.cloud.bigquery.QueryStage.QueryStep;
 import com.google.common.collect.ImmutableList;
@@ -35,6 +36,16 @@ import org.junit.Test;
 
 public class JobStatisticsTest {
 
+  private static final BiEngineReason BI_ENGINE_REASON =
+      BiEngineReason.newBuilder()
+          .setMessage("Detected unsupported join type")
+          .setCode("UNSUPPORTED_SQL_TEXT")
+          .build();
+  private static final BiEngineStats BI_ENGINE_STATS =
+      BiEngineStats.newBuilder()
+          .setBiEngineReasons(ImmutableList.of(BI_ENGINE_REASON))
+          .setBiEngineMode("DISABLED")
+          .build();
   private static final Integer BILLING_TIER = 42;
   private static final Boolean CACHE_HIT = true;
   private static final String DDL_OPERATION_PERFORMED = "SKIP";
@@ -73,6 +84,7 @@ public class JobStatisticsTest {
   private static final String NAME = "reservation-name";
   private static final Long SLOTMS = 12545L;
   private static final String TRANSACTION_ID = UUID.randomUUID().toString().substring(0, 8);
+  private static final String SESSION_ID = UUID.randomUUID().toString().substring(0, 8);
   private static final CopyStatistics COPY_STATISTICS =
       CopyStatistics.newBuilder()
           .setCreationTimestamp(CREATION_TIME)
@@ -152,6 +164,7 @@ public class JobStatisticsTest {
           .setCreationTimestamp(CREATION_TIME)
           .setEndTime(END_TIME)
           .setStartTime(START_TIME)
+          .setBiEngineStats(BI_ENGINE_STATS)
           .setBillingTier(BILLING_TIER)
           .setCacheHit(CACHE_HIT)
           .setDDLOperationPerformed(DDL_OPERATION_PERFORMED)
@@ -222,6 +235,9 @@ public class JobStatisticsTest {
   private static final TransactionInfo TRANSACTION_INFO =
       TransactionInfo.newbuilder().setTransactionId(TRANSACTION_ID).build();
 
+  private static final SessionInfo SESSION_INFO =
+      SessionInfo.newBuilder().setSessionId(SESSION_ID).build();
+
   @Test
   public void testBuilder() {
     assertEquals(CREATION_TIME, EXTRACT_STATISTICS.getCreationTime());
@@ -241,6 +257,7 @@ public class JobStatisticsTest {
     assertEquals(CREATION_TIME, QUERY_STATISTICS.getCreationTime());
     assertEquals(START_TIME, QUERY_STATISTICS.getStartTime());
     assertEquals(END_TIME, QUERY_STATISTICS.getEndTime());
+    assertEquals(BI_ENGINE_STATS, QUERY_STATISTICS.getBiEngineStats());
     assertEquals(BILLING_TIER, QUERY_STATISTICS.getBillingTier());
     assertEquals(CACHE_HIT, QUERY_STATISTICS.getCacheHit());
     assertEquals(DDL_OPERATION_PERFORMED, QUERY_STATISTICS.getDdlOperationPerformed());
@@ -293,6 +310,7 @@ public class JobStatisticsTest {
     assertEquals(NAME, RESERVATION_USAGE.getName());
     assertEquals(SLOTMS, RESERVATION_USAGE.getSlotMs());
     assertEquals(TRANSACTION_ID, TRANSACTION_INFO.getTransactionId());
+    assertEquals(SESSION_ID, SESSION_INFO.getSessionId());
   }
 
   @Test
@@ -319,6 +337,7 @@ public class JobStatisticsTest {
     }
     compareReservation(RESERVATION_USAGE, ReservationUsage.fromPb(RESERVATION_USAGE.toPb()));
     compareTransactionInfo(TRANSACTION_INFO, TransactionInfo.fromPb(TRANSACTION_INFO.toPb()));
+    compareSessionInfo(SESSION_INFO, SessionInfo.fromPb(SESSION_INFO.toPb()));
   }
 
   @Test
@@ -440,5 +459,13 @@ public class JobStatisticsTest {
     assertEquals(expected.toString(), value.toString());
     assertEquals(expected.toPb(), value.toPb());
     assertEquals(expected.getTransactionId(), value.getTransactionId());
+  }
+
+  private void compareSessionInfo(SessionInfo expected, SessionInfo value) {
+    assertEquals(expected, value);
+    assertEquals(expected.hashCode(), value.hashCode());
+    assertEquals(expected.toString(), value.toString());
+    assertEquals(expected.toPb(), value.toPb());
+    assertEquals(expected.getSessionId(), value.getSessionId());
   }
 }
