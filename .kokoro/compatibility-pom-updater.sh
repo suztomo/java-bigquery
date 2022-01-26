@@ -12,8 +12,9 @@ function replacePomFile () {
   ARTIFACT_ID=$2
   VERSION=$3
   echo "$GROUP_ID $ARTIFACT_ID $VERSION"
-  export IFS=$IFS_BACKUP
-  for POM in `find . -name pom.xml`; do
+
+  while IFS= read -r -d '' POM
+  do
     HAS_DEPENDENCY=$(xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 \
         -t -v "count(//x:project/x:dependencies/x:dependency/x:artifactId[text()='${ARTIFACT_ID}'])" \
         $POM)
@@ -34,13 +35,13 @@ function replacePomFile () {
         --update "//*/x:artifactId[text()='${ARTIFACT_ID}']/../x:version" \
         --value "$VERSION" "$POM"
     fi
-  done
+  done <   <(find . -name pom.xml -print0)
 }
 
 IFS_BACKUP=$IFS
-export IFS=","
+IFS=","
 for MAVEN_COORDINATES in $MAVEN_COORDINATES_LIST; do
-  items=("${MAVEN_COORDINATES//:/ }")
+  IFS=':' read -ra items <<< "$MAVEN_COORDINATES"
   GROUP_ID="${items[0]}"
   ARTIFACT_ID="${items[1]}"
   VERSION="${items[2]}"
