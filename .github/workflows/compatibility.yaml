@@ -29,6 +29,8 @@ jobs:
         java-version: 8
     - run: java -version
     - uses: GoogleCloudPlatform/cloud-opensource-java/dependency-update@github_action_dependency_updator
+      with:
+        mavenCoordinates: ${{ github.event.inputs.dependencyMavenCoordinates }}
     - run: .kokoro/build.sh
       env:
         JOB_TYPE: test
