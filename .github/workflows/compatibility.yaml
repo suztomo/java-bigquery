@@ -2,10 +2,6 @@ name: Compatibility Check
 on:
   workflow_dispatch:
     inputs:
-      baseBranch:
-        description: 'Base branch'
-        required: true
-        type: string
       dependencyMavenCoordinates:
         description: 'The Maven coordinates of the dependency to check'
         required: true
@@ -16,11 +12,10 @@ jobs:
     steps:
     - name: Print the input variables
       run: |
-        echo "baseBranch: ${{ github.event.inputs.baseBranch }}"
         echo "dependencyMavenCoordinates: ${{ github.event.inputs.dependencyMavenCoordinates }}"
     - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.inputs.baseBranch }}
+    - name: Show git commit log of the specified branch
+      run: git log -1
     - uses: stCarolas/setup-maven@v4
       with:
         maven-version: 3.8.1
@@ -31,6 +26,10 @@ jobs:
     - uses: GoogleCloudPlatform/cloud-opensource-java/dependency-update@github_action_dependency_updator
       with:
         mavenCoordinates: ${{ github.event.inputs.dependencyMavenCoordinates }}
+    - name: Showing code diff after version update
+      run: |
+        git diff
+      shell: bash
     - run: .kokoro/build.sh
       env:
         JOB_TYPE: test
