@@ -28,9 +28,7 @@ jobs:
       with:
         java-version: 8
     - run: java -version
-    - name: Update pom.xml to use the specified dependencies
-      run: |
-        ./kokoro/compatibility-pom-updater.sh ${{ github.event.inputs.dependencyMavenCoordinates }}
+    - uses: GoogleCloudPlatform/cloud-opensource-java/dependency-update@github_action_dependency_updator
     - run: .kokoro/build.sh
       env:
         JOB_TYPE: test
