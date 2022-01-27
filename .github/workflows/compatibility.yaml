@@ -8,15 +8,15 @@ on:
         # baseBranch variable allows us to use the workflow definition in the
         # main branch against old branches. This does not require copying this
         # workflow file to the branch.
-        description: 'Base branch'
+        description: 'Base branch (e.g, 2.3.x)'
         required: true
         type: string
       dependencyMavenCoordinates:
-        description: 'The Maven coordinates of the dependency to check'
+        description: 'The Maven coordinates of the dependency to check (comma-separated)'
         required: true
         type: string
-      preinstallRepositoryUrl:
-        description: 'The URL of the repository to install into local Maven repository before running the check'
+      preinstallRepository:
+        description: '<owner>/<repository> to install into local Maven repository before running the check'
         required: false
         type: string
       preinstallRepositoryRef:
@@ -34,14 +34,14 @@ jobs:
       with:
         ref: ${{ github.event.inputs.baseBranch }}
     - name: Preinstall another repository if specified
-      if: ${{ github.event.inputs.preinstallRepositoryUrl && github.event.inputs.preinstallRepositoryRef }}
+      if: ${{ github.event.inputs.preinstallRepository && github.event.inputs.preinstallRepositoryRef }}
       uses: actions/checkout@v2
       with:
-        repository: ${{ github.event.inputs.preinstallRepositoryUrl }}
+        repository: ${{ github.event.inputs.preinstallRepository }}
         ref: ${{ github.event.inputs.preinstallRepositoryRef }}
         path: preinstall-module
     - name: Install the artifacts of the module if specified
-      if: ${{ github.event.inputs.preinstallRepositoryUrl && github.event.inputs.preinstallRepositoryRef }}
+      if: ${{ github.event.inputs.preinstallRepository && github.event.inputs.preinstallRepositoryRef }}
       run: |
         echo "pwd:"
         pwd
